@@ -37,7 +37,7 @@ def is_admin(interaction: discord.Interaction) -> bool:
     return interaction.user.guild_permissions.administrator
 
 # ================= EMBED FARBE =================
-WEISS = discord.Color.white()
+WEISS = discord.Color.from_rgb(255, 255, 255)
 
 # ================= COMMANDS =================
 @bot.event
