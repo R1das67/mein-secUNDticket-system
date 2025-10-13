@@ -230,7 +230,7 @@ class TicketOpenPersistentView(discord.ui.View):
                 overwrites[mod_role] = discord.PermissionOverwrite(view_channel=True, send_messages=True)
 
         channel = await guild.create_text_channel(
-            name=f"9R-ticket-{interaction.user.name}-{ticket_count}",
+            name=f"9R-ticket-{ticket_count}",
             category=category,
             overwrites=overwrites
         )
@@ -294,7 +294,7 @@ class TicketOpenPersistentView2(discord.ui.View):
                 overwrites[mod_role] = discord.PermissionOverwrite(view_channel=True, send_messages=True)
 
         channel = await guild.create_text_channel(
-            name=f"9R-ticket2-{interaction.user.name}-{ticket_count_2}",
+            name=f"9R-ticket2-{ticket_count_2}",
             category=category,
             overwrites=overwrites
         )
@@ -358,7 +358,7 @@ class TicketOpenPersistentView3(discord.ui.View):
                 overwrites[mod_role] = discord.PermissionOverwrite(view_channel=True, send_messages=True)
 
         channel = await guild.create_text_channel(
-            name=f"9R-ticket3-{interaction.user.name}-{ticket_count_3}",
+            name=f"9R-ticket3-{ticket_count_3}",
             category=category,
             overwrites=overwrites
         )
