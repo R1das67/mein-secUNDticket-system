@@ -412,5 +412,20 @@ class ConfirmNoButton(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction):
         await interaction.response.send_message("❌ Ticket bleibt geöffnet.", ephemeral=True)
 
+# =================== $close COMMAND ===================
+@bot.command(name="close")
+async def close_ticket(ctx):
+    """Schließt ein Ticket über den Textbefehl $close (egal welches Panel)."""
+    if isinstance(ctx.channel, discord.TextChannel):
+        # Prüfen, ob es ein Ticket-Channel ist
+        if ctx.channel.name.startswith(("9R-ticket-", "9R-ticket2-", "9R-ticket3-")):
+            await ctx.send("✅ Ticket wird geschlossen...")
+            await asyncio.sleep(2)
+            await ctx.channel.delete()
+        else:
+            await ctx.send("❌ Dieser Befehl kann nur in einem Ticket-Channel verwendet werden.")
+    else:
+        await ctx.send("❌ Dieser Befehl kann nur in einem Textkanal verwendet werden.")
+
 # ================= START BOT =================
 bot.run(os.getenv("DISCORD_TOKEN"))
