@@ -10,7 +10,7 @@ intents = discord.Intents.default()
 intents.guilds = True
 intents.members = True
 
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bot(command_prefix="$", intents=intents)
 
 # ================= STORAGE PANEL 1 =================
 ticket_category_id = None
