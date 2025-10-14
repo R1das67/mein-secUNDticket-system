@@ -419,7 +419,7 @@ async def close_ticket(ctx):
     """Schließt ein Ticket über den Textbefehl $close (egal welches Panel)."""
     if isinstance(ctx.channel, discord.TextChannel):
         # Prüfen, ob es ein Ticket-Channel ist
-        if ctx.channel.name.lower().startswith(("9R-ticket-", "9R-ticket2-", "9R-ticket3-")):
+        if ctx.channel.name.lower().startswith(("9r-ticket-", "9r-ticket2-", "9r-ticket3-")):
             await ctx.send("✅ Ticket wird geschlossen...")
             await asyncio.sleep(2)
             await ctx.channel.delete()
