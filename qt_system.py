@@ -275,7 +275,7 @@ class TicketOpenPersistentView(discord.ui.View):
             interaction.user: discord.PermissionOverwrite(view_channel=True, send_messages=True, attach_files=True),
         }
 
-        safe_name = interaction.user.display_name.replace(" ", "-").lower()
+        safe_name = interaction.user.name.replace(" ", "-").lower()
         channel = await guild.create_text_channel(
             name=f"{safe_name}",
             category=category,
@@ -335,7 +335,7 @@ class TicketOpenPersistentView2(discord.ui.View):
             interaction.user: discord.PermissionOverwrite(view_channel=True, send_messages=True, attach_files=True),
         }
 
-        safe_name = interaction.user.display_name.replace(" ", "-").lower()
+        safe_name = interaction.user.name.replace(" ", "-").lower()
         channel = await guild.create_text_channel(
             name=f"{safe_name}",
             category=category,
@@ -395,7 +395,7 @@ class TicketOpenPersistentView3(discord.ui.View):
             interaction.user: discord.PermissionOverwrite(view_channel=True, send_messages=True, attach_files=True),
         }
 
-        safe_name = interaction.user.display_name.replace(" ", "-").lower()
+        safe_name = interaction.user.name.replace(" ", "-").lower()
         channel = await guild.create_text_channel(
             name=f"{safe_name}",
             category=category,
