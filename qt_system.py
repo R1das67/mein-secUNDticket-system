@@ -33,31 +33,26 @@ embed_title_3 = "📨 Support Ticket (Panel 3)"
 embed_text_3 = "Bitte erstelle ein Ticket, um deine Angelegenheiten mit dem Support zu besprechen."
 
 # ================= THUMBNAIL & IMAGE (IN-MEMORY) =================
-# Diese Variablen werden nur zur Laufzeit gespeichert und beim Neustart gelöscht
 thumbnail_url = None  # für alle Embeds / überall
 image_url = None      # nur für das Startpanel-Embed (wo der Ticket-Button ist)
 
 # ================= ADMIN CHECK =================
 def is_admin(interaction: discord.Interaction) -> bool:
-    """Prüft, ob der Benutzer Administratorrechte hat."""
     return interaction.user.guild_permissions.administrator
 
 # ================= EMBED FARBE =================
-WEISS = discord.Color.from_rgb(255, 255, 255)  # Weiß
+WEISS = discord.Color.from_rgb(255, 255, 255)
 
 # ================= COMMANDS =================
 @bot.event
 async def on_ready():
     print(f"✅ Bot online als {bot.user}")
-
-    # Persistent Views registrieren
     bot.add_view(TicketOpenPersistentView())      
     bot.add_view(TicketClosePersistentView())     
     bot.add_view(TicketOpenPersistentView2())     
     bot.add_view(TicketClosePersistentView2())    
     bot.add_view(TicketOpenPersistentView3())     
     bot.add_view(TicketClosePersistentView3())    
-
     await bot.tree.sync()
     print(f"Slash Commands synchronisiert")
 
@@ -84,7 +79,6 @@ async def ticket_starten(interaction: discord.Interaction):
         description="Bitte erstelle ein Ticket, um deine Angelegenheiten mit dem Support zu besprechen.",
         color=WEISS
     )
-    # global thumbnail + image apply
     global thumbnail_url, image_url
     if thumbnail_url:
         try:
@@ -138,7 +132,6 @@ async def ticket_starten_2(interaction: discord.Interaction):
         description=embed_text_2,
         color=WEISS
     )
-    # apply thumbnail + image (image only for startpanel)
     global thumbnail_url, image_url
     if thumbnail_url:
         try:
@@ -192,7 +185,6 @@ async def ticket_starten_3(interaction: discord.Interaction):
         description=embed_text_3,
         color=WEISS
     )
-    # apply thumbnail + image (image only for startpanel)
     global thumbnail_url, image_url
     if thumbnail_url:
         try:
@@ -209,7 +201,7 @@ async def ticket_starten_3(interaction: discord.Interaction):
     await interaction.channel.send(embed=embed, view=view)
     await interaction.response.send_message("✅ Ticket-Nachricht (Panel 3) wurde gesendet.", ephemeral=True)
 
-# ================= NEW COMMANDS: set-thumbnail & set-image =================
+# ================= NEW COMMANDS =================
 @bot.tree.command(name="set-thumbnail", description="Setze ein Thumbnail für alle Embeds (wird beim Neustart zurückgesetzt)")
 @app_commands.check(is_admin)
 async def set_thumbnail(interaction: discord.Interaction, link: str):
@@ -246,7 +238,6 @@ async def admin_error(interaction: discord.Interaction, error):
 
 # ================= HELPER FUNKTION =================
 async def user_has_open_ticket(guild, user, category_id):
-    """Überprüft, ob der Nutzer bereits ein Ticket in der Kategorie hat."""
     category = guild.get_channel(category_id)
     if not category:
         return False
@@ -264,7 +255,7 @@ class TicketOpenPersistentView(discord.ui.View):
 
     @discord.ui.button(label="📨 Ticket erstellen", style=discord.ButtonStyle.primary, custom_id="ticket_open")
     async def ticket_open_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        global ticket_count, ticket_category_id
+        global ticket_category_id
         if ticket_category_id is None:
             await interaction.response.send_message("❌ Es wurde keine Ticket-Kategorie gesetzt!", ephemeral=True)
             return
@@ -273,7 +264,6 @@ class TicketOpenPersistentView(discord.ui.View):
             await interaction.response.send_message("⚠️ Du hast bereits ein offenes Ticket in diesem Panel.", ephemeral=True)
             return
 
-        ticket_count += 1
         guild = interaction.guild
         category = guild.get_channel(ticket_category_id)
         if category is None:
@@ -285,8 +275,9 @@ class TicketOpenPersistentView(discord.ui.View):
             interaction.user: discord.PermissionOverwrite(view_channel=True, send_messages=True, attach_files=True),
         }
 
+        safe_name = interaction.user.display_name.replace(" ", "-").lower()
         channel = await guild.create_text_channel(
-            name=f"zek-ticket-{ticket_count}",
+            name=f"{safe_name}",
             category=category,
             overwrites=overwrites
         )
@@ -297,7 +288,6 @@ class TicketOpenPersistentView(discord.ui.View):
             description="Bitte haben Sie ein wenig Geduld, der Support wird sich um Sie kümmern.",
             color=WEISS
         )
-        # Thumbnail applies to ticket embed as well (but image does NOT)
         global thumbnail_url
         if thumbnail_url:
             try:
@@ -325,7 +315,7 @@ class TicketOpenPersistentView2(discord.ui.View):
 
     @discord.ui.button(label="📨 Ticket erstellen", style=discord.ButtonStyle.primary, custom_id="ticket_open_2")
     async def ticket_open_button_2(self, interaction: discord.Interaction, button: discord.ui.Button):
-        global ticket_count_2, ticket_category_id_2
+        global ticket_category_id_2
         if ticket_category_id_2 is None:
             await interaction.response.send_message("❌ Es wurde keine Ticket-Kategorie gesetzt!", ephemeral=True)
             return
@@ -334,7 +324,6 @@ class TicketOpenPersistentView2(discord.ui.View):
             await interaction.response.send_message("⚠️ Du hast bereits ein offenes Ticket in diesem Panel.", ephemeral=True)
             return
 
-        ticket_count_2 += 1
         guild = interaction.guild
         category = guild.get_channel(ticket_category_id_2)
         if category is None:
@@ -346,8 +335,9 @@ class TicketOpenPersistentView2(discord.ui.View):
             interaction.user: discord.PermissionOverwrite(view_channel=True, send_messages=True, attach_files=True),
         }
 
+        safe_name = interaction.user.display_name.replace(" ", "-").lower()
         channel = await guild.create_text_channel(
-            name=f"zek-ticket-{ticket_count_2}",
+            name=f"{safe_name}",
             category=category,
             overwrites=overwrites
         )
@@ -358,7 +348,6 @@ class TicketOpenPersistentView2(discord.ui.View):
             description="Bitte haben Sie ein wenig Geduld, der Support wird sich um Sie kümmern.",
             color=WEISS
         )
-        # Thumbnail applies to ticket embed as well (but image does NOT)
         global thumbnail_url
         if thumbnail_url:
             try:
@@ -386,7 +375,7 @@ class TicketOpenPersistentView3(discord.ui.View):
 
     @discord.ui.button(label="📨 Ticket erstellen", style=discord.ButtonStyle.primary, custom_id="ticket_open_3")
     async def ticket_open_button_3(self, interaction: discord.Interaction, button: discord.ui.Button):
-        global ticket_count_3, ticket_category_id_3
+        global ticket_category_id_3
         if ticket_category_id_3 is None:
             await interaction.response.send_message("❌ Es wurde keine Ticket-Kategorie gesetzt!", ephemeral=True)
             return
@@ -395,7 +384,6 @@ class TicketOpenPersistentView3(discord.ui.View):
             await interaction.response.send_message("⚠️ Du hast bereits ein offenes Ticket in diesem Panel.", ephemeral=True)
             return
 
-        ticket_count_3 += 1
         guild = interaction.guild
         category = guild.get_channel(ticket_category_id_3)
         if category is None:
@@ -407,8 +395,9 @@ class TicketOpenPersistentView3(discord.ui.View):
             interaction.user: discord.PermissionOverwrite(view_channel=True, send_messages=True, attach_files=True),
         }
 
+        safe_name = interaction.user.display_name.replace(" ", "-").lower()
         channel = await guild.create_text_channel(
-            name=f"zek-ticket-{ticket_count_3}",
+            name=f"{safe_name}",
             category=category,
             overwrites=overwrites
         )
@@ -419,7 +408,6 @@ class TicketOpenPersistentView3(discord.ui.View):
             description="Bitte haben Sie ein wenig Geduld, der Support wird sich um Sie kümmern.",
             color=WEISS
         )
-        # Thumbnail applies to ticket embed as well (but image does NOT)
         global thumbnail_url
         if thumbnail_url:
             try:
@@ -464,20 +452,6 @@ class ConfirmNoButton(discord.ui.Button):
 
     async def callback(self, interaction: discord.Interaction):
         await interaction.response.send_message("❌ Ticket bleibt geöffnet.", ephemeral=True)
-
-# =================== $close COMMAND ===================
-@bot.command(name="close")
-async def close_ticket(ctx):
-    """Schließt ein Ticket über den Textbefehl $close (egal welches Panel)."""
-    if isinstance(ctx.channel, discord.TextChannel):
-        if ctx.channel.name.lower().startswith(("zek-ticket-")):
-            await ctx.send("✅ Ticket wird geschlossen...")
-            await asyncio.sleep(2)
-            await ctx.channel.delete()
-        else:
-            await ctx.send("❌ Dieser Befehl kann nur in einem Ticket-Channel verwendet werden.")
-    else:
-        await ctx.send("❌ Dieser Befehl kann nur in einem Textkanal verwendet werden.")
-
+        
 # ================= START BOT =================
 bot.run(os.getenv("DISCORD_TOKEN"))
